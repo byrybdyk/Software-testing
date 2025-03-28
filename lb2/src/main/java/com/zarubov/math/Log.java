@@ -1,8 +1,11 @@
 package com.zarubov.math;
 
 import com.zarubov.CsvWriter;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class Log {
+    private Ln ln;
     public Double calculate(Double x, Double base, Double eps) {
         if (eps <= 0.0) {
             throw new IllegalArgumentException("Epsilon must be non-negative");
@@ -20,8 +23,8 @@ public class Log {
             throw new IllegalArgumentException("Base must be greater than 1 and finite");
         }
 
-        double lnX = new Ln().calculate(x, eps);
-        double lnBase = new Ln().calculate(base, eps);
+        double lnX = ln.calculate(x, eps);
+        double lnBase = ln.calculate(base, eps);
 
         CsvWriter csvWriter = new CsvWriter();
         csvWriter.saveLogToCsv("Log.csv", x,base, lnX / lnBase);

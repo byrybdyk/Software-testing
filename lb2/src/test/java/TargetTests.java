@@ -53,7 +53,7 @@ class TargetTests {
             } else if (mock instanceof Tan) {
                 Mockito.when(((Tan) mock).calculate(input, EPS)).thenReturn(output);
             } else if (mock instanceof Log) {
-                double base = Double.parseDouble(record.get(1)); // Читаем основание логарифма
+                double base = Double.parseDouble(record.get(1));
                 double logOutput = Double.parseDouble(record.get(2));
                 Mockito.when(((Log) mock).calculate(input, base, EPS)).thenReturn(logOutput);
             } else if (mock instanceof Ln) {
@@ -64,8 +64,80 @@ class TargetTests {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/TargetIn.csv")
-    void testTarget(Double input, Double expected) {
+    void testTargetMocks(Double input, Double expected) {
         Target target = new Target(cotMock, cosMock, cscMock, tanMock, logMock, lnMock);
+        Double result = target.calculate(input, funEps);
+        Assertions.assertEquals(expected, result, testEps);
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/TargetIn.csv")
+    void testTargetCot(Double input, Double expected) {
+        Cot cot = new Cot(cosMock, new NormaliseTrigonometrical());
+        Target target = new Target(cot, cosMock, cscMock, tanMock, logMock, lnMock);
+        Double result = target.calculate(input, funEps);
+        Assertions.assertEquals(expected, result, testEps);
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/TargetIn.csv")
+    void testTargetCsc(Double input, Double expected) {
+        Csc csc = new Csc(new NormaliseTrigonometrical(), cosMock);
+        Target target = new Target(cotMock, cosMock, csc, tanMock, logMock, lnMock);
+        Double result = target.calculate(input, funEps);
+        Assertions.assertEquals(expected, result, testEps);
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/TargetIn.csv")
+    void testTargetTan(Double input, Double expected) {
+        Tan tan = new Tan(new NormaliseTrigonometrical(), cosMock);
+        Target target = new Target(cotMock, cosMock, cscMock, tan, logMock, lnMock);
+        Double result = target.calculate(input, funEps);
+        Assertions.assertEquals(expected, result, testEps);
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/TargetIn.csv")
+    void testTargetCos(Double input, Double expected) {
+        Cos cos = new Cos(new NormaliseTrigonometrical());
+        Cot cot = new Cot(cos, new NormaliseTrigonometrical());
+        Csc csc = new Csc(new NormaliseTrigonometrical(), cos);
+        Tan tan = new Tan(new NormaliseTrigonometrical(), cos);
+        Target target = new Target(cot, cos, csc, tan, logMock, lnMock);
+        Double result = target.calculate(input, funEps);
+        Assertions.assertEquals(expected, result, testEps);
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/TargetIn.csv")
+    void testTargetLog(Double input, Double expected) {
+        Log log = new Log(lnMock);
+        Target target = new Target(cotMock, cosMock, cscMock, tanMock, log, lnMock);
+        Double result = target.calculate(input, funEps);
+        Assertions.assertEquals(expected, result, testEps);
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/TargetIn.csv")
+    void testTargetLn(Double input, Double expected) {
+        Ln ln = new Ln();
+        Log log = new Log(ln);
+        Target target = new Target(cotMock, cosMock, cscMock, tanMock, log, ln);
+        Double result = target.calculate(input, funEps);
+        Assertions.assertEquals(expected, result, testEps);
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/TargetIn.csv")
+    void testTargetNoMock(Double input, Double expected) {
+        Cos cos = new Cos(new NormaliseTrigonometrical());
+        Cot cot = new Cot(cos, new NormaliseTrigonometrical());
+        Csc csc = new Csc(new NormaliseTrigonometrical(), cos);
+        Tan tan = new Tan(new NormaliseTrigonometrical(), cos);
+        Ln ln = new Ln();
+        Log log = new Log(ln);
+        Target target = new Target(cot, cos, csc, tan, log, ln);
         Double result = target.calculate(input, funEps);
         Assertions.assertEquals(expected, result, testEps);
     }
