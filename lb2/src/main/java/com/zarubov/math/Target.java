@@ -17,6 +17,7 @@ public class Target {
         if(eps <= 0.0) {
             throw new IllegalArgumentException("Epsilon must be non-negative");
         }
+
         if (x <= 0) {
             return Math.pow((((cot.calculate(x, eps) + cos.calculate(x, eps)) + csc.calculate(x, eps)) - tan.calculate(x,eps)) - cos.calculate(x, eps), 2);
         } else {

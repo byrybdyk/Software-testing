@@ -17,6 +17,11 @@ public class Csc {
         Double xValue = nt.normalise(x);
         double cosValue = cos.calculate(xValue, eps);
         double sinValue = Math.sqrt(1 - cosValue * cosValue);
+        if (xValue > 0 && xValue < Math.PI) {
+            sinValue = Math.sqrt(1 - cosValue * cosValue);
+        } else {
+            sinValue = -Math.sqrt(1 - cosValue * cosValue);
+        }
         if (Math.abs(sinValue) < eps) {
             throw new ArithmeticException("Котангенс не определен при x = " + x);
         }
